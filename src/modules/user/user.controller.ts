@@ -1,27 +1,22 @@
 import { Request, Response } from "express";
-import { userService } from "./user.service";
 import httpStatus from "http-status";
+import { userService } from "./user.service";
+import { asyncHandler } from "../../utils/asyncHandler";
+import { sendResponse } from "../../utils/sendResponse";
 
-const registerUser = async (req: Request, res: Response): Promise<void> => {
-  try {
+const registerUser = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
     const payload = req.body;
     const data = await userService.insertUserIntoDb(payload);
-    res.status(httpStatus.CREATED).json({
+
+    sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
       message: "User registered successfully.",
       data,
     });
-  } catch (error: unknown) {
-    console.error(error);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-      message: (error as Error).message,
-      error,
-    });
-  }
-};
+  },
+);
 
 export const userController = {
   registerUser,

@@ -1,7 +1,8 @@
 import app from "./app";
+import config from "./config";
 import { prisma } from "./lib/prisma";
 
-const port = 8000;
+const port = config.port;
 
 (async function (): Promise<void> {
   try {

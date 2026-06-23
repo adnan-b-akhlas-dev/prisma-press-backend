@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import { IRegisterUser, User } from "./user.interface";
+import config from "../../config";
 
 const insertUserIntoDb = async (
   payload: IRegisterUser,
@@ -12,7 +13,10 @@ const insertUserIntoDb = async (
     throw new Error("User will this email already exists.");
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(
+    password,
+    Number(config.bcrypt_salt_round),
+  );
 
   const registeredUser = await prisma.user.create({
     data: {

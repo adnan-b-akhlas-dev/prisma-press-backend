@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { userRouter } from "./modules/user/user.route";
 
 const app: Application = express();
 
@@ -14,5 +15,7 @@ app.get("/", (req: Request, res: Response) => {
     message: "API is running.",
   });
 });
+
+app.use("/api/users", userRouter);
 
 export default app;

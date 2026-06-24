@@ -8,14 +8,14 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const payload = req.body;
   const data = await authService.authenticateUser(payload);
 
-  res.cookie("access_token", data.accessToken, {
+  res.cookie("access_token", `Bearer ${data.accessToken}`, {
     httpOnly: true,
     secure: false,
     sameSite: "none",
     maxAge: 1000 * 60 * 60 * 24,
   });
 
-  res.cookie("refresh_token", data.refreshToken, {
+  res.cookie("refresh_token", `Bearer ${data.refreshToken}`, {
     httpOnly: true,
     secure: false,
     sameSite: "none",

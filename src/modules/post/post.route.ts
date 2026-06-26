@@ -5,14 +5,14 @@ import { Role } from "../../prisma/generated/prisma/enums";
 
 export const postRouter: Router = Router();
 
-postRouter.get("/", postController.createPost);
-postRouter.get("/stats", auth(Role.ADMIN), postController.createPost);
+postRouter.get("/", postController.getAllPosts);
+postRouter.get("/stats", auth(Role.ADMIN), postController.getPostStats);
 postRouter.get(
   "/my-posts",
   auth(Role.USER, Role.AUTHOR, Role.ADMIN),
-  postController.createPost,
+  postController.getMyPosts,
 );
-postRouter.get("/:postId", postController.createPost);
+postRouter.get("/:postId", postController.getSinglePost);
 postRouter.post(
   "/",
   auth(Role.ADMIN, Role.AUTHOR, Role.USER),
@@ -21,10 +21,10 @@ postRouter.post(
 postRouter.patch(
   "/:postId",
   auth(Role.ADMIN, Role.AUTHOR, Role.USER),
-  postController.createPost,
+  postController.updatePost,
 );
 postRouter.delete(
   "/:postId",
   auth(Role.ADMIN, Role.AUTHOR, Role.USER),
-  postController.createPost,
+  postController.deletePost,
 );

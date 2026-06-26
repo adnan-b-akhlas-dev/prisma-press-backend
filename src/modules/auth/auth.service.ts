@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import config from "../../config";
 import { prisma } from "../../lib/prisma";
+import { ActiveStatus } from "../../prisma/generated/prisma/enums";
 import { jwtUtils } from "../../utils/jwt";
 import { ILoginPayload, ILoginResponse } from "./auth.interface";
 
@@ -40,6 +41,37 @@ const authenticateUser = async (
   return { user: safeUser, accessToken, refreshToken };
 };
 
+const renewAccessToken = async (refreshToken: string): Promise<string> => {
+  const decode = jwtUtils.verifyToken(refreshToken, config.jwt_refresh_secret);
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: decode.id,
+      email: decode.email,
+    },
+  });
+
+  if (user.activeStatus === ActiveStatus.BLOCKED) {
+    throw new Error(
+      "You account is blocked. Please contact with customer support.",
+    );
+  }
+
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
+
+  const newAccessToken = jwtUtils.createToken(
+    jwtPayload,
+    config.jwt_access_secret,
+    config.jwt_access_expires_in,
+  );
+  return newAccessToken;
+};
+
 export const authService = {
   authenticateUser,
+  renewAccessToken,
 };

@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { userRouter } from "./modules/user/user.route";
 import { authRouter } from "./modules/auth/auth.route";
+import { postRouter } from "./modules/post/post.route";
+import { commentRouter } from "./modules/comment/comment.route";
 
 const app: Application = express();
 
@@ -19,5 +21,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/posts", postRouter);
+app.use("/api/comments", commentRouter);
 
 export default app;

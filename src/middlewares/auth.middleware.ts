@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { jwtUtils } from "../utils/jwt";
 import config from "../config";
 import { prisma } from "../lib/prisma";
-import { ActiveStatus, Role } from "../../generated/prisma/enums";
+import { ActiveStatus, Role } from "../prisma/generated/prisma/enums";
 
 const auth = (...requiredRoles: Role[]) =>
   asyncHandler(

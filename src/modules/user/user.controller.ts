@@ -2,10 +2,8 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { sendResponse } from "../../utils/sendResponse";
-import { userService } from "./user.service";
-import { jwtUtils } from "../../utils/jwt";
-import config from "../../config";
 import { User } from "./user.interface";
+import { userService } from "./user.service";
 
 const registerUser = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {

@@ -13,8 +13,42 @@ const getAllPostsFromDb = async (): Promise<PostModel[]> => {
   return posts;
 };
 const getPostStatsFromDb = async (): Promise<void> => {};
-const getMyPostsFromDb = async (): Promise<void> => {};
-const getSinglePostFromDb = async (): Promise<void> => {};
+
+const getMyPostsFromDb = async (userId: string): Promise<PostModel[]> => {
+  const myPosts = await prisma.post.findMany({
+    where: {
+      authorId: userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      comment: true,
+      _count: {
+        select: {
+          comment: true,
+        },
+      },
+    },
+  });
+
+  return myPosts;
+};
+
+const getSinglePostFromDb = async (postId: string): Promise<PostModel> => {
+  const post = await prisma.post.update({
+    where: { id: postId },
+    data: { views: { increment: 1 } },
+    include: {
+      author: {
+        omit: { password: true },
+      },
+      comment: true,
+    },
+  });
+
+  return post;
+};
 
 const createPostIntoDb = async (
   payload: ICreatePostRequest,

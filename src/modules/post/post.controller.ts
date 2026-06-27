@@ -23,11 +23,36 @@ const getPostStats = asyncHandler(
 );
 
 const getMyPosts = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.user as User;
+    const data = await postService.getMyPostsFromDb(id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "My posts retrieved successfully.",
+      data,
+    });
+  },
 );
 
 const getSinglePost = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const { postId } = req.params;
+
+    if (!postId) {
+      throw new Error("Post ID required in params");
+    }
+
+    const data = await postService.getSinglePostFromDb(postId as string);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Post retrieved successfully.",
+      data,
+    });
+  },
 );
 
 const createPost = asyncHandler(

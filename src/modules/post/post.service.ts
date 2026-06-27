@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { CommentStatus, PostStatus } from "../../prisma/generated/prisma/enums";
 import { PostModel } from "../../prisma/generated/prisma/models";
-import { ICreatePostRequest } from "./post.interface";
+import { ICreatePostRequest, IPostsStatsResponse } from "./post.interface";
 
 const getAllPostsFromDb = async (): Promise<PostModel[]> => {
   const posts = await prisma.post.findMany({
@@ -14,16 +14,7 @@ const getAllPostsFromDb = async (): Promise<PostModel[]> => {
   return posts;
 };
 
-const getPostStatsFromDb = async (): Promise<{
-  totalPosts: number;
-  totalPublishedPosts: number;
-  totalDraftPosts: number;
-  totalArchivedPosts: number;
-  totalComments: number;
-  totalApprovedComments: number;
-  totalRejectedComments: number;
-  totalViews: number | null;
-}> => {
+const getPostStatsFromDb = async (): Promise<IPostsStatsResponse> => {
   const result = await prisma.$transaction(async (tx) => {
     const [
       totalPosts,

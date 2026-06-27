@@ -20,7 +20,15 @@ const getAllPosts = asyncHandler(
 );
 
 const getPostStats = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const data = await postService.getPostStatsFromDb();
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Posts stats retrieved successfully.",
+      data,
+    });
+  },
 );
 
 const getMyPosts = asyncHandler(

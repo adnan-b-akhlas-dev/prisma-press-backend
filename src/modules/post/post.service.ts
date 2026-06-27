@@ -12,6 +12,7 @@ const getAllPostsFromDb = async (): Promise<PostModel[]> => {
 
   return posts;
 };
+
 const getPostStatsFromDb = async (): Promise<void> => {};
 
 const getMyPostsFromDb = async (userId: string): Promise<PostModel[]> => {
@@ -64,7 +65,36 @@ const createPostIntoDb = async (
   return post;
 };
 
-const updatePostIntoDb = async (): Promise<void> => {};
+const updatePostIntoDb = async (
+  postId: string,
+  userId: string,
+  isAdmin: boolean,
+  payload: Partial<ICreatePostRequest>,
+): Promise<PostModel> => {
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+  });
+
+  if (!post) {
+    throw new Error("Requested post not found.");
+  }
+  if (!isAdmin && userId !== post.authorId) {
+    throw new Error("You are not authorized to update others post.");
+  }
+
+  const updatedPost = await prisma.post.update({
+    where: { id: postId },
+    data: { ...payload },
+    include: {
+      author: {
+        omit: { password: true },
+      },
+      comment: true,
+    },
+  });
+
+  return updatedPost;
+};
 
 const deletePostFromDb = async (
   postId: string,

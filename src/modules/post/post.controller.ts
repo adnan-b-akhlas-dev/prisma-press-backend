@@ -72,7 +72,30 @@ const createPost = asyncHandler(
 );
 
 const updatePost = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const { postId } = req.params;
+    const userId = (req.user as User).id;
+    const isAdmin = (req.user as User).role === Role.ADMIN;
+    const payload = req.body;
+
+    if (!postId) {
+      throw new Error("Post ID required in params");
+    }
+
+    const data = await postService.updatePostIntoDb(
+      postId as string,
+      userId,
+      isAdmin,
+      payload,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Post updated successfully.",
+      data,
+    });
+  },
 );
 
 const deletePost = asyncHandler(

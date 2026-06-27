@@ -65,7 +65,27 @@ const createPostIntoDb = async (
 };
 
 const updatePostIntoDb = async (): Promise<void> => {};
-const deletePostFromDb = async (): Promise<void> => {};
+
+const deletePostFromDb = async (
+  postId: string,
+  userId: string,
+  isAdmin: boolean,
+): Promise<void> => {
+  const post = await prisma.post.findUniqueOrThrow({
+    where: { id: postId },
+  });
+  if (!post) {
+    throw new Error("Requested post not found.");
+  }
+
+  if (!isAdmin && userId !== post.authorId) {
+    throw new Error("You can not delete others post.");
+  }
+
+  await prisma.post.delete({
+    where: { id: postId },
+  });
+};
 
 export const postService = {
   getAllPostsFromDb,

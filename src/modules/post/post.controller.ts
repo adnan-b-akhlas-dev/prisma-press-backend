@@ -4,6 +4,7 @@ import { User } from "../user/user.interface";
 import { postService } from "./post.service";
 import httpStatus from "http-status";
 import { sendResponse } from "../../utils/sendResponse";
+import { Role } from "../../prisma/generated/prisma/enums";
 
 const getAllPosts = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
@@ -75,7 +76,23 @@ const updatePost = asyncHandler(
 );
 
 const deletePost = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const { postId } = req.params;
+    const userId = (req.user as User).id;
+    const isAdmin = (req.user as User).role === Role.ADMIN;
+
+    if (!postId) {
+      throw new Error("Post ID required in params.");
+    }
+
+    await postService.deletePostFromDb(postId as string, userId, isAdmin);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Post removed successfully.",
+    });
+  },
 );
 
 export const postController = {

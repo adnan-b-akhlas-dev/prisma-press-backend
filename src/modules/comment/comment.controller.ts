@@ -43,10 +43,38 @@ const getSingleComment = asyncHandler(
   },
 );
 const createComment = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const authorId = (req.user as User).id;
+    const payload = req.body;
+    const data = await commentService.createCommentIntoDb(authorId, payload);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Comment created successfully.",
+      data,
+    });
+  },
 );
 const updateComment = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const commentId = req.params.commentId as string;
+    const authorId = (req.user as User).id;
+    const payload = req.body;
+
+    const data = await commentService.updateCommentIntoDb(
+      authorId,
+      commentId,
+      payload,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Comment updated successfully.",
+      data,
+    });
+  },
 );
 const deleteComment = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {

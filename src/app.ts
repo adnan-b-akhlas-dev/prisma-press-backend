@@ -5,6 +5,7 @@ import { userRouter } from "./modules/user/user.route";
 import { authRouter } from "./modules/auth/auth.route";
 import { postRouter } from "./modules/post/post.route";
 import { commentRouter } from "./modules/comment/comment.route";
+import morgan from "morgan";
 
 const app: Application = express();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(morgan("dev"));
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({

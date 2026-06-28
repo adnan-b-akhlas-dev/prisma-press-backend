@@ -2,6 +2,7 @@ import { prisma } from "../../lib/prisma";
 import { CommentModel } from "../../prisma/generated/prisma/models";
 import {
   TCreateCommentPayload,
+  TModerateCommentPayload,
   TUpdateCommentPayload,
 } from "./comment.interface";
 
@@ -81,7 +82,28 @@ const deleteCommentFromDb = async (
     where: { id: commentId },
   });
 };
-const moderateCommentIntoDb = async (): Promise<void> => {};
+
+const moderateCommentIntoDb = async (
+  commentId: string,
+  payload: TModerateCommentPayload,
+): Promise<CommentModel> => {
+  const comment = await prisma.comment.findUniqueOrThrow({
+    where: { id: commentId },
+  });
+
+  if (comment.status === payload.status) {
+    throw new Error(
+      `Your provided status ${payload.status} is already up to date.`,
+    );
+  }
+
+  const updatedComment = await prisma.comment.update({
+    where: { id: commentId },
+    data: { ...payload },
+  });
+
+  return updatedComment;
+};
 
 export const commentService = {
   getCommentsByAuthorFromDb,

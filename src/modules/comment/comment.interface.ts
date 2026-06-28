@@ -9,3 +9,5 @@ export interface ICommentPayload {
 export type TCreateCommentPayload = Pick<ICommentPayload, "postId" | "content">;
 
 export type TUpdateCommentPayload = Pick<ICommentPayload, "content" | "status">;
+
+export type TModerateCommentPayload = Pick<ICommentPayload, "status">;

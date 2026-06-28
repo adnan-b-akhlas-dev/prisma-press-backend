@@ -92,7 +92,18 @@ const deleteComment = asyncHandler(
   },
 );
 const moderateComment = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {},
+  async (req: Request, res: Response): Promise<void> => {
+    const commentId = req.params.commentId as string;
+    const payload = req.body;
+    const data = await commentService.moderateCommentIntoDb(commentId, payload);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Comment moderate successfully.",
+      data,
+    });
+  },
 );
 
 export const commentController = {

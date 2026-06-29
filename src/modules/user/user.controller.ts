@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import httpStatus from "http-status";
+import status from "http-status";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { sendResponse } from "../../utils/sendResponse";
 import { User } from "./user.interface";
@@ -11,7 +11,7 @@ const registerUser = asyncHandler(
     const data = await userService.insertUserIntoDb(payload);
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: status.CREATED,
       message: "User registered successfully.",
       data,
     });
@@ -25,7 +25,7 @@ const getMyProfile = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Profile retrieved successfully.",
       data,
     });

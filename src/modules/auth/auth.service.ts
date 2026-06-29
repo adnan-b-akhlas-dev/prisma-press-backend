@@ -4,6 +4,8 @@ import { prisma } from "../../lib/prisma";
 import { ActiveStatus } from "../../prisma/generated/prisma/enums";
 import { jwtUtils } from "../../utils/jwt";
 import { ILoginPayload, ILoginResponse } from "./auth.interface";
+import { AppError } from "../../helpers/AppError";
+import status from "http-status";
 
 const authenticateUser = async (
   payload: ILoginPayload,
@@ -15,7 +17,7 @@ const authenticateUser = async (
 
   const isPasswordMatched = await bcrypt.compare(password, user.password);
   if (!isPasswordMatched) {
-    throw new Error("Invalid credentials.");
+    throw new AppError("Invalid credentials.", status.BAD_REQUEST);
   }
   const { password: _, ...safeUser } = user;
 
@@ -51,8 +53,9 @@ const renewAccessToken = async (refreshToken: string): Promise<string> => {
   });
 
   if (user.activeStatus === ActiveStatus.BLOCKED) {
-    throw new Error(
+    throw new AppError(
       "You account is blocked. Please contact with customer support.",
+      status.UNAUTHORIZED,
     );
   }
 

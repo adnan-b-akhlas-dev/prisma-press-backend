@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { User } from "../user/user.interface";
 import { postService } from "./post.service";
-import httpStatus from "http-status";
+import status from "http-status";
 import { sendResponse } from "../../utils/sendResponse";
 import { Role } from "../../prisma/generated/prisma/enums";
 
@@ -13,7 +13,7 @@ const getAllPosts = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Posts retrieved successfully.",
       data,
     });
@@ -25,7 +25,7 @@ const getPostStats = asyncHandler(
     const data = await postService.getPostStatsFromDb();
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Posts stats retrieved successfully.",
       data,
     });
@@ -39,7 +39,7 @@ const getMyPosts = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "My posts retrieved successfully.",
       data,
     });
@@ -58,7 +58,7 @@ const getSinglePost = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Post retrieved successfully.",
       data,
     });
@@ -73,7 +73,7 @@ const createPost = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: status.CREATED,
       message: "Post created successfully.",
       data,
     });
@@ -100,7 +100,7 @@ const updatePost = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Post updated successfully.",
       data,
     });
@@ -121,7 +121,7 @@ const deletePost = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Post removed successfully.",
     });
   },

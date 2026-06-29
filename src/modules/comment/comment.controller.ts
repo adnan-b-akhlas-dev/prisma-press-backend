@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import httpStatus from "http-status";
+import status from "http-status";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { sendResponse } from "../../utils/sendResponse";
 import { commentService } from "./comment.service";
@@ -18,7 +18,7 @@ const getCommentsByAuthor = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Author's comments retrieved successfully.",
       data,
     });
@@ -36,7 +36,7 @@ const getSingleComment = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Comment retrieved successfully.",
       data,
     });
@@ -50,7 +50,7 @@ const createComment = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: status.CREATED,
       message: "Comment created successfully.",
       data,
     });
@@ -70,7 +70,7 @@ const updateComment = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Comment updated successfully.",
       data,
     });
@@ -86,7 +86,7 @@ const deleteComment = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Comment removed successfully.",
     });
   },
@@ -99,7 +99,7 @@ const moderateComment = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Comment moderate successfully.",
       data,
     });

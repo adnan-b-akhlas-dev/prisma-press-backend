@@ -4,6 +4,8 @@ import { jwtUtils } from "../utils/jwt";
 import config from "../config";
 import { prisma } from "../lib/prisma";
 import { ActiveStatus, Role } from "../prisma/generated/prisma/enums";
+import { AppError } from "../helpers/AppError";
+import status from "http-status";
 
 const auth = (...requiredRoles: Role[]) =>
   asyncHandler(
@@ -13,7 +15,7 @@ const auth = (...requiredRoles: Role[]) =>
       )?.split(" ")[1];
 
       if (!token) {
-        throw new Error("Please Login to continue.");
+        throw new AppError("Please Login to continue.", status.BAD_REQUEST);
       }
 
       const decode = jwtUtils.verifyToken(token, config.jwt_access_secret);
@@ -24,14 +26,16 @@ const auth = (...requiredRoles: Role[]) =>
       });
 
       if (user.activeStatus === ActiveStatus.BLOCKED) {
-        throw new Error(
+        throw new AppError(
           "Your account has been blocked. Please contact with customer support.",
+          status.UNAUTHORIZED,
         );
       }
 
       if (!requiredRoles.includes(user.role)) {
-        throw new Error(
+        throw new AppError(
           "Access forbidden. You do not have permission to access this api.",
+          status.FORBIDDEN,
         );
       }
 

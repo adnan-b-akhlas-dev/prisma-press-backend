@@ -1,4 +1,6 @@
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
+import { AppError } from "../helpers/AppError";
+import status from "http-status";
 
 const createToken = (
   payload: JwtPayload,
@@ -10,14 +12,14 @@ const createToken = (
 };
 
 const verifyToken = (token: string, secretKey: string): JwtPayload => {
-  try {
-    const decode = jwt.verify(token, secretKey);
-    return decode as JwtPayload;
-  } catch (error: unknown) {
-    const err = error as Error;
-    console.log("Token verification failed", error);
-    throw new Error(err.message);
+  const decode = jwt.verify(token, secretKey);
+  if (typeof decode === "string") {
+    throw new AppError(
+      "Invalid or expired token. Please login again to continue.",
+      status.UNAUTHORIZED,
+    );
   }
+  return decode;
 };
 
 export const jwtUtils = {

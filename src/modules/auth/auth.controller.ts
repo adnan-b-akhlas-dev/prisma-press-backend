@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { sendResponse } from "../../utils/sendResponse";
-import httpStatus from "http-status";
+import status from "http-status";
 import { authService } from "./auth.service";
 
 const loginUser = asyncHandler(
@@ -25,7 +25,7 @@ const loginUser = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "User login successfully.",
       data,
     });
@@ -52,7 +52,7 @@ const refreshToken = asyncHandler(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: status.OK,
       message: "Access Token renewed successfully.",
       data: { accessToken },
     });

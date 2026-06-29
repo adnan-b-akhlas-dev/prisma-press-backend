@@ -1,6 +1,6 @@
 //  Custom AppError class
 // Throw this anywhere in your app for controlled HTTP errors:
-// throw new AppError("User not found", httpStatus.NOT_FOUND)
+// throw new AppError("User not found", status.NOT_FOUND)
 export class AppError extends Error {
   public readonly statusCode: number;
 

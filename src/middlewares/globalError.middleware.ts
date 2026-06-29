@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Prisma } from "../prisma/generated/prisma/client";
-import httpStatus from "http-status";
+import status from "http-status";
 import { AppError } from "../helpers/AppError";
 
 const globalError = async (
@@ -9,14 +9,14 @@ const globalError = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  let statusCode: number = httpStatus.INTERNAL_SERVER_ERROR;
+  let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let name = "Internal Server Error";
   let message = "Something went wrong";
   let error: unknown = null;
 
   // Generic JS Error (base fallback)
   if (err instanceof Error) {
-    statusCode = httpStatus.INTERNAL_SERVER_ERROR;
+    statusCode = status.INTERNAL_SERVER_ERROR;
     name = err.name;
     message = err.message;
     error = err.stack;
@@ -24,7 +24,7 @@ const globalError = async (
 
   //  Prisma: query engine validation (wrong field name, wrong type, etc.)
   if (err instanceof Prisma.PrismaClientValidationError) {
-    statusCode = httpStatus.BAD_REQUEST;
+    statusCode = status.BAD_REQUEST;
     name = err.name;
     error = err.stack;
 
@@ -102,69 +102,69 @@ const globalError = async (
       // Unique constraint violation
       case "P2002": {
         const fields = (err.meta?.target as string[])?.join(", ") ?? "unknown";
-        statusCode = httpStatus.CONFLICT;
+        statusCode = status.CONFLICT;
         message = `Unique constraint failed on field(s): ${fields}`;
         break;
       }
 
       // Foreign key constraint violation
       case "P2003":
-        statusCode = httpStatus.BAD_REQUEST;
+        statusCode = status.BAD_REQUEST;
         message = `Foreign key constraint failed on field: ${err.meta?.field_name ?? "unknown"}`;
         break;
 
       // Record not found (findUniqueOrThrow / findFirstOrThrow)
       case "P2025":
-        statusCode = httpStatus.NOT_FOUND;
+        statusCode = status.NOT_FOUND;
         message =
           (err.meta?.cause as string) ?? "Requested record does not exist";
         break;
 
       // Required relation not found
       case "P2018":
-        statusCode = httpStatus.NOT_FOUND;
+        statusCode = status.NOT_FOUND;
         message = "Required related record was not found";
         break;
 
       // Null constraint violation
       case "P2011":
-        statusCode = httpStatus.BAD_REQUEST;
+        statusCode = status.BAD_REQUEST;
         message = `Null constraint violation on: ${err.meta?.constraint ?? "unknown"}`;
         break;
 
       // Value too long for column
       case "P2000":
-        statusCode = httpStatus.BAD_REQUEST;
+        statusCode = status.BAD_REQUEST;
         message = `Value too long for column: ${err.meta?.column_name ?? "unknown"}`;
         break;
 
       // Record to update/delete not found
       case "P2001":
-        statusCode = httpStatus.NOT_FOUND;
+        statusCode = status.NOT_FOUND;
         message = "Record to update or delete does not exist";
         break;
 
       // Relation violation
       case "P2014":
-        statusCode = httpStatus.BAD_REQUEST;
+        statusCode = status.BAD_REQUEST;
         message = `Relation violation: ${err.meta?.relation_name ?? "unknown"}`;
         break;
 
       // Inconsistent column data
       case "P2023":
-        statusCode = httpStatus.BAD_REQUEST;
+        statusCode = status.BAD_REQUEST;
         message = `Inconsistent column data: ${err.meta?.message ?? "unknown"}`;
         break;
 
       default:
-        statusCode = httpStatus.BAD_REQUEST;
+        statusCode = status.BAD_REQUEST;
         message = err.message;
     }
   }
 
   // Prisma: unknown request errors
   if (err instanceof Prisma.PrismaClientUnknownRequestError) {
-    statusCode = httpStatus.INTERNAL_SERVER_ERROR;
+    statusCode = status.INTERNAL_SERVER_ERROR;
     name = err.name;
     message = "Unknown database request error";
     error = err.stack;
@@ -172,7 +172,7 @@ const globalError = async (
 
   //  Prisma: connection / initialization errors
   if (err instanceof Prisma.PrismaClientInitializationError) {
-    statusCode = httpStatus.SERVICE_UNAVAILABLE;
+    statusCode = status.SERVICE_UNAVAILABLE;
     name = err.name;
     message = "Database connection failed: " + err.message;
     error = err.stack;
@@ -180,7 +180,7 @@ const globalError = async (
 
   //  Prisma: Rust panic (engine crash)
   if (err instanceof Prisma.PrismaClientRustPanicError) {
-    statusCode = httpStatus.INTERNAL_SERVER_ERROR;
+    statusCode = status.INTERNAL_SERVER_ERROR;
     name = err.name;
     message = "A critical database engine error occurred";
     error = err.stack;
@@ -188,7 +188,7 @@ const globalError = async (
 
   //  Syntax errors (bad JSON body, etc.)
   if (err instanceof SyntaxError && "body" in err) {
-    statusCode = httpStatus.BAD_REQUEST;
+    statusCode = status.BAD_REQUEST;
     name = "SyntaxError";
     message = "Invalid JSON in request body";
     error = err.stack;

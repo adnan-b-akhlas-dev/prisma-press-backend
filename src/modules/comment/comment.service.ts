@@ -1,3 +1,5 @@
+import status from "http-status";
+import { AppError } from "../../helpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { CommentModel } from "../../prisma/generated/prisma/models";
 import {
@@ -45,13 +47,9 @@ const updateCommentIntoDb = async (
   commentId: string,
   payload: TUpdateCommentPayload,
 ): Promise<CommentModel> => {
-  const comment = await prisma.comment.findUnique({
+  await prisma.comment.findUniqueOrThrow({
     where: { id: commentId, authorId },
   });
-
-  if (!comment) {
-    throw new Error("Request comment not found.");
-  }
 
   const updatedComment = await prisma.comment.update({
     where: { id: commentId },
@@ -66,16 +64,15 @@ const deleteCommentFromDb = async (
   authorId: string,
   isAdmin: boolean,
 ): Promise<void> => {
-  const comment = await prisma.comment.findUnique({
+  const comment = await prisma.comment.findUniqueOrThrow({
     where: { id: commentId },
   });
 
-  if (!comment) {
-    throw new Error("Request comment not found.");
-  }
-
   if (!isAdmin && authorId !== comment.authorId) {
-    throw new Error("You are not authorized to delete others comments.");
+    throw new AppError(
+      "You are not authorized to delete others comments.",
+      status.UNAUTHORIZED,
+    );
   }
 
   await prisma.comment.delete({
@@ -92,8 +89,9 @@ const moderateCommentIntoDb = async (
   });
 
   if (comment.status === payload.status) {
-    throw new Error(
+    throw new AppError(
       `Your provided status ${payload.status} is already up to date.`,
+      status.CONFLICT,
     );
   }
 

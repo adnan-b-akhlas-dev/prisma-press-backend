@@ -7,11 +7,6 @@ const insertUserIntoDb = async (
   payload: IRegisterUser,
 ): Promise<User | null> => {
   const { name, email, password, profilePhoto } = payload;
-  // const isUserExist = await prisma.user.findUnique({ where: { email } });
-
-  // if (isUserExist) {
-  //   throw new Error("User will this email already exists.");
-  // }
 
   const hashedPassword = await bcrypt.hash(
     password,

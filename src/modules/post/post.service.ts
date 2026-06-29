@@ -17,9 +17,11 @@ const getAllPostsFromDb = async (
   const q = queries;
   const search = q.search || null;
   const limit = Number(q.limit || 10);
-  const page = Number(q.page || 1) - 1;
-  const skip = limit * page;
+  const page = Number(q.page || 1);
+  const skip = limit * (page - 1);
   const select = parseFields(q.fields);
+  const sortBy = q.sortBy || "createdAt";
+  const orderBy = q.orderBy || "desc";
 
   const andConditions: PostWhereInput[] = [];
 
@@ -38,6 +40,7 @@ const getAllPostsFromDb = async (
     select: select,
     take: limit,
     skip: skip,
+    orderBy: { [sortBy]: orderBy },
   });
 
   return posts;

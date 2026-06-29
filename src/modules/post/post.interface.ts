@@ -26,4 +26,6 @@ export interface IPostQueries extends PostWhereInput {
   page?: number;
   search?: string;
   fields?: string;
+  sortBy?: string;
+  orderBy?: string;
 }

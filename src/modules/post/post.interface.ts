@@ -1,4 +1,5 @@
 import { PostStatus } from "../../prisma/generated/prisma/enums";
+import { PostWhereInput } from "../../prisma/generated/prisma/models";
 
 export interface ICreatePostRequest {
   title: string;
@@ -18,4 +19,11 @@ export interface IPostsStatsResponse {
   totalApprovedComments: number;
   totalRejectedComments: number;
   totalViews: number | null;
+}
+
+export interface IPostQueries extends PostWhereInput {
+  limit?: number;
+  page?: number;
+  search?: string;
+  fields?: string;
 }

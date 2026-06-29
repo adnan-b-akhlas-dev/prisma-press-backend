@@ -1,14 +1,43 @@
 import { prisma } from "../../lib/prisma";
 import { CommentStatus, PostStatus } from "../../prisma/generated/prisma/enums";
-import { PostModel } from "../../prisma/generated/prisma/models";
-import { ICreatePostRequest, IPostsStatsResponse } from "./post.interface";
+import {
+  PostModel,
+  PostWhereInput,
+} from "../../prisma/generated/prisma/models";
+import parseFields from "../../utils/parseFields";
+import {
+  ICreatePostRequest,
+  IPostQueries,
+  IPostsStatsResponse,
+} from "./post.interface";
 
-const getAllPostsFromDb = async (): Promise<PostModel[]> => {
+const getAllPostsFromDb = async (
+  queries: IPostQueries,
+): Promise<PostModel[]> => {
+  const q = queries;
+  const search = q.search || null;
+  const limit = Number(q.limit || 10);
+  const page = Number(q.page || 1) - 1;
+  const skip = limit * page;
+  const select = parseFields(q.fields);
+
+  const andConditions: PostWhereInput[] = [];
+
+  if (search) {
+    andConditions?.push({
+      OR: [
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+        { tags: { has: search } },
+      ],
+    });
+  }
+
   const posts = await prisma.post.findMany({
-    include: {
-      author: { omit: { password: true } },
-      comment: true,
-    },
+    where: { AND: andConditions },
+    select: select,
+    take: limit,
+    skip: skip,
   });
 
   return posts;

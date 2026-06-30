@@ -54,6 +54,7 @@ export const ModelName = {
   Comment: 'Comment',
   Post: 'Post',
   Profile: 'Profile',
+  Subscription: 'Subscription',
   User: 'User'
 } as const
 
@@ -95,6 +96,7 @@ export const PostScalarFieldEnum = {
   status: 'status',
   tags: 'tags',
   views: 'views',
+  isPremium: 'isPremium',
   authorId: 'authorId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -113,6 +115,18 @@ export const ProfileScalarFieldEnum = {
 } as const
 
 export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  currentPeriodEnd: 'currentPeriodEnd',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

@@ -8,6 +8,7 @@ import { commentRouter } from "./modules/comment/comment.route";
 import morgan from "morgan";
 import notFound from "./middlewares/notFound.middleware";
 import globalError from "./middlewares/globalError.middleware";
+import { subscriptionRouter } from "./modules/subscription/subscription.route";
 
 const app: Application = express();
 
@@ -27,6 +28,7 @@ app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/comments", commentRouter);
+app.use("/api/subscription", subscriptionRouter);
 
 app.use(notFound);
 app.use(globalError);
